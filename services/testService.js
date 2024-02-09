@@ -2,6 +2,7 @@ const GetDbConnection = require("../database/connection");
 const Question = require("../models/questionsSchema");
 const UserTests = require("../models/userTests");
 const {Types} = require("mongoose");
+const mongoose = require("mongoose");
 
 
 async function GetQuestions() {
@@ -32,26 +33,31 @@ async function GetQuestions() {
     }
 }
 
-async function StartUserTest(userId, timeStamp) {
+async function StartUserTest(userId, questionIds, timeStamp) {
     // let connection = GetDbConnection()
+    userId = '65c627fa2068c3cadd3f5a06'
     try {
         let existingTest = await UserTests.find({user_id: userId, is_completed: 0})
         if (existingTest == null) {
-            throw new Error("You have an existing test, going")
+            throw new Error("You have an existing on going test")
         }
         let questionIdsObj = []
+        console.log(questionIds)
         for (let i = 0; i < questionIds.length; i++) {
-            questionIdsObj.push(Types.ObjectId(questionIds[i]))
+            questionIdsObj.push(new mongoose.Types.ObjectId(questionIds[i]))
         }
+        console.log(questionIdsObj)
         const newUserTest = new UserTests({
-            user_id: userId,
+            user_id: new mongoose.Types.ObjectId(userId),
             question_bank: questionIdsObj,
             score: 0,
             start_time: timeStamp,
             is_completed: false,
+
         });
         let newTest = await newUserTest.save();
-        return newTest._id;
+        console.log(newTest._id.toString())
+        return newTest._id.toString();
     } catch (error) {
         console.error('Error:', error);
         return error
@@ -61,9 +67,10 @@ async function StartUserTest(userId, timeStamp) {
 }
 
 async function EndUserTest(userId, userTestId, timeStamp, questionIdAnswersMap) {
-    let connection = GetDbConnection()
+    // let connection = GetDbConnection()
     try {
-        let existingTest = await UserTests.find({_id: userTestId, user_id: userId, is_completed: 0})
+        userId = '65c627fa2068c3cadd3f5a06'
+        let existingTest = await UserTests.findOne({_id: userTestId, user_id: userId, is_completed: 0})
         if (existingTest == null) {
             throw new Error("You have no existing test going on")
         }
@@ -116,7 +123,7 @@ async function EndUserTest(userId, userTestId, timeStamp, questionIdAnswersMap) 
         console.error('Error:', error);
         return error
     } finally {
-        await connection.close()
+        // await connection.close()
     }
 }
 

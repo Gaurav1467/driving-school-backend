@@ -8,12 +8,16 @@ router.get('/questions', async (req,res) => {
     res.send(responseData).status(200)
 })
 
-router.post('/startTest', auth, async (req,res) => {
-    return await StartUserTest
+router.post('/startTest', async (req,res) => {
+    console.log(req.body)
+    id =  await StartUserTest(req.body.user, req.body.questionIds, req.body.timestamp)
+    res.send(id).status(200)
 })
 
-router.post('/endTest', auth, async (req,res) => {
-    return await EndUserTest
+router.post('/endTest', async (req,res) => {
+    console.log(req.body)
+    x = await EndUserTest('asasa', req.body.userTestId , req.body.timestamp,req.body.TestData)
+    res.send(x).status(200)
 })
 
 module.exports = router
