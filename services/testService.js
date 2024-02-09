@@ -5,10 +5,9 @@ const {Types} = require("mongoose");
 
 
 async function GetQuestions() {
-    let connection = GetDbConnection()
+    // let connection = GetDbConnection()
     try {
         let questions = await Question.aggregate([{$sample: {size: 10}}]).exec();
-        console.log(questions)
         if (questions == null) {
             throw new Error("Something went wrong")
         }
@@ -16,6 +15,7 @@ async function GetQuestions() {
         for (let i = 0; i < questions.length; i++) {
             let responseData = {};
             responseData._id = questions[i]._id.toString()
+            responseData.label =[questions[i].option_one, questions[i].option_two, questions[i].option_three, questions[i].option_four]
             responseData.question_data = questions[i].question_data
             responseData.option_one = questions[i].option_one
             responseData.option_two = questions[i].option_two
@@ -28,12 +28,12 @@ async function GetQuestions() {
         console.error('Error:', error);
         return error
     } finally {
-        await connection.close()
+        // await connection.close()
     }
 }
 
-async function StartUserTest(userId, questionIds, timeStamp) {
-    let connection = GetDbConnection()
+async function StartUserTest(userId, timeStamp) {
+    // let connection = GetDbConnection()
     try {
         let existingTest = await UserTests.find({user_id: userId, is_completed: 0})
         if (existingTest == null) {
@@ -56,7 +56,7 @@ async function StartUserTest(userId, questionIds, timeStamp) {
         console.error('Error:', error);
         return error
     } finally {
-        await connection.close()
+        // await connection.close()
     }
 }
 
@@ -124,5 +124,4 @@ function GetPastUserTests(userId, timeStamp) {
     // two objects, one a list of user test and the other is the performance analysis
 }
 
-
-GetQuestions();
+module.exports = {GetQuestions, StartUserTest, EndUserTest}

@@ -1,14 +1,13 @@
 const mongoose = require('mongoose');
-const {Mongoose} = require("mongoose");
 const { Schema } = mongoose;
 
 const userTestSchema = new Schema({
     user_id: {
-        type: Mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     question_bank: {
-        type: [Mongoose.Schema.Types.ObjectId],
+        type: [mongoose.Schema.Types.ObjectId],
         default: [],
         required: true
     },
@@ -29,11 +28,11 @@ const userTestSchema = new Schema({
         default: false,
     },
     correct_questions: {
-        type: [Mongoose.Schema.Types.ObjectId],
+        type: [mongoose.Schema.Types.ObjectId],
         default: [],
     },
     wrong_questions: {
-        type: [Mongoose.Schema.Types.ObjectId],
+        type: [mongoose.Schema.Types.ObjectId],
         default: [],
     },
     created_at: {
